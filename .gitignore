@@ -31,3 +31,11 @@ Cache/
 *.log
 installer/
 tool/
+fonts/
+src/gui_edition/assets/*.svg
+src/gui_edition/assets/*.png
+*.mp4
+*.mp3
+*.zip
+*.7z
+Volume/
