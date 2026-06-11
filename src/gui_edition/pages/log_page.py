@@ -1,27 +1,28 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QTextEdit, QPushButton, QCheckBox, QGroupBox,
-    QFrame,
+    QTextEdit, QPushButton, QCheckBox, QFrame, QScrollArea,
 )
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtGui import QFont, QTextCursor
+from PySide6.QtGui import QTextCursor
 
 
 class LogPage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._dark = False
         self._setup_ui()
 
     def _setup_ui(self):
-        outer_layout = QVBoxLayout(self)
-        outer_layout.setContentsMargins(0, 0, 0, 0)
-        outer_layout.setSpacing(0)
-
-        scroll_area = QWidget()
-        layout = QVBoxLayout(scroll_area)
+        self.outer = QVBoxLayout(self)
+        self.outer.setContentsMargins(0, 0, 0, 0)
+        self.outer.setSpacing(0)
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFrameShape(QFrame.NoFrame)
+        self.outer.addWidget(self.scroll)
+        self.container = QWidget()
+        layout = QVBoxLayout(self.container)
         layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(16)
+        layout.setSpacing(12)
 
         self.header = QLabel("运行日志")
         h_font = self.header.font()
@@ -31,7 +32,7 @@ class LogPage(QWidget):
         layout.addWidget(self.header)
 
         toolbar = QHBoxLayout()
-        toolbar.setSpacing(12)
+        toolbar.setSpacing(16)
         self.auto_scroll = QCheckBox("自动滚动")
         self.auto_scroll.setChecked(True)
         toolbar.addWidget(self.auto_scroll)
@@ -55,6 +56,7 @@ class LogPage(QWidget):
 
         self.clear_btn = QPushButton("清空日志")
         self.clear_btn.setMinimumHeight(32)
+        self.clear_btn.setObjectName("btnSecondary")
         self.clear_btn.clicked.connect(self._clear_logs)
         toolbar.addWidget(self.clear_btn)
 
@@ -62,103 +64,44 @@ class LogPage(QWidget):
 
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
-        self.log_text.setStyleSheet(
-            "font-family: Consolas, 'Courier New', monospace; "
-            "font-size: 12px; "
-            "background: #1e1e1e; "
-            "color: #d4d4d4; "
-            "border: 1px solid #333; "
-            "border-radius: 4px; "
-            "padding: 8px;"
-        )
-        layout.addWidget(self.log_text)
+        self.log_text.setMinimumHeight(400)
+        self.log_text.setObjectName("logTerminal")
+        layout.addWidget(self.log_text, 1)
 
-        layout.addStretch()
-
-        outer_layout.addWidget(scroll_area)
+        self.scroll.setWidget(self.container)
 
         self._all_lines: list[tuple[str, str]] = []
 
-    def update_theme(self, dark: bool):
-        self._dark = dark
-        if dark:
-            self.header.setStyleSheet("color: #d4d4d4;")
-            self.clear_btn.setStyleSheet("""
-                QPushButton {
-                    background: #333;
-                    color: #d4d4d4;
-                    border: 1px solid #555;
-                    border-radius: 4px;
-                    padding: 6px 12px;
-                }
-                QPushButton:hover { background: #444; }
-            """)
-        else:
-            self.header.setStyleSheet("color: #333;")
-            self.clear_btn.setStyleSheet("")
+    def update_theme(self, dark):
+        pass
 
     @Slot(str)
     def append_log(self, message: str, level: str = "info"):
         self._all_lines.append((message, level))
-
         if not self._should_show(level):
             return
-
-        color_map = {
-            "info": "#d4d4d4",
-            "warning": "#dcdcaa",
-            "error": "#f44747",
-            "success": "#6a9955",
-        }
+        color_map = {"info": "#d4d4d4", "warning": "#dcdcaa", "error": "#f44747", "success": "#6a9955"}
+        prefix_map = {"info": "[INFO]", "warning": "[WARN]", "error": "[ERROR]", "success": "[ OK ]"}
         color = color_map.get(level, "#d4d4d4")
-
-        prefix_map = {
-            "info": "[INFO]",
-            "warning": "[WARN]",
-            "error": "[ERROR]",
-            "success": "[ OK ]",
-        }
         prefix = prefix_map.get(level, "[LOG]")
-
-        self.log_text.append(
-            f'<span style="color:{color};">{prefix} {message}</span>'
-        )
-
+        self.log_text.append(f'<span style="color:{color};">{prefix} {message}</span>')
         if self.auto_scroll.isChecked():
             cursor = self.log_text.textCursor()
             cursor.movePosition(QTextCursor.MoveOperation.End)
             self.log_text.setTextCursor(cursor)
 
     def _should_show(self, level: str) -> bool:
-        if level == "info":
-            return self.show_info.isChecked()
-        elif level == "warning":
-            return self.show_warning.isChecked()
-        elif level == "error":
-            return self.show_error.isChecked()
-        return True
+        return {"info": self.show_info, "warning": self.show_warning, "error": self.show_error}.get(level, self.show_info).isChecked()
 
     def _filter_logs(self):
         self.log_text.clear()
         for msg, level in self._all_lines:
             if self._should_show(level):
-                color_map = {
-                    "info": "#d4d4d4",
-                    "warning": "#dcdcaa",
-                    "error": "#f44747",
-                    "success": "#6a9955",
-                }
+                color_map = {"info": "#d4d4d4", "warning": "#dcdcaa", "error": "#f44747", "success": "#6a9955"}
+                prefix_map = {"info": "[INFO]", "warning": "[WARN]", "error": "[ERROR]", "success": "[ OK ]"}
                 color = color_map.get(level, "#d4d4d4")
-                prefix_map = {
-                    "info": "[INFO]",
-                    "warning": "[WARN]",
-                    "error": "[ERROR]",
-                    "success": "[ OK ]",
-                }
                 prefix = prefix_map.get(level, "[LOG]")
-                self.log_text.append(
-                    f'<span style="color:{color};">{prefix} {msg}</span>'
-                )
+                self.log_text.append(f'<span style="color:{color};">{prefix} {msg}</span>')
 
     def _clear_logs(self):
         self._all_lines.clear()

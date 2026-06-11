@@ -1,12 +1,12 @@
 [Setup]
 AppId={{B8F7E3A2-4D5C-4E8F-9A1B-2C3D4E5F6A7B}}
 AppName=DucK-Downloader-GUI
-AppVersion=1.0.1
+AppVersion=1.0.2
 AppPublisher=Xiaomi MiMo
 DefaultDirName={autopf}\DucK-Downloader-GUI
 DefaultGroupName=DucK-Downloader-GUI
 OutputDir=C:\Qyyy\TikTokDownloader-master\installer
-OutputBaseFilename=DucK-Downloader-GUI-1.0.1-Setup
+OutputBaseFilename=DucK-Downloader-GUI-1.0.2-Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

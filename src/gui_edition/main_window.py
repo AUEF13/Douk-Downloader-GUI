@@ -1,5 +1,6 @@
 import asyncio
 import sys
+from pathlib import Path
 from asyncio import new_event_loop
 from threading import Event, Thread
 
@@ -9,7 +10,7 @@ from PySide6.QtWidgets import (
     QApplication, QSizePolicy,
 )
 from PySide6.QtCore import Qt, Signal, Slot, QTimer
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QPixmap
 
 from .bridge import GUIBridge
 from .theme import ThemeManager, init_theme
@@ -104,7 +105,7 @@ class AsyncThread(Thread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("DucK-Downloader-GUI v1.0.1")
+        self.setWindowTitle("DucK-Downloader-GUI v1.0.2")
         self.setMinimumSize(1000, 700)
         self.resize(1100, 750)
 
@@ -122,6 +123,7 @@ class MainWindow(QMainWindow):
 
         self._apply_theme_button()
         self.sidebar_buttons[0].setChecked(True)
+        self._update_sidebar_for_page()
 
     def _init_bridge(self):
         future = self._async_thread.run_coro(self.bridge.initialize())
@@ -146,12 +148,10 @@ class MainWindow(QMainWindow):
         sidebar_layout.setContentsMargins(12, 24, 12, 16)
         sidebar_layout.setSpacing(4)
 
-        self.logo_label = QLabel("DucK-Downloader")
+        logo_path = str(Path(__file__).parent / "assets" / "logo.png")
+        self.logo_label = QLabel()
+        self.logo_label.setPixmap(QPixmap(logo_path).scaled(160, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         self.logo_label.setAlignment(Qt.AlignCenter)
-        logo_font = QFont()
-        logo_font.setPointSize(14)
-        logo_font.setBold(True)
-        self.logo_label.setFont(logo_font)
         self.logo_label.setObjectName("sidebarLogo")
         sidebar_layout.addWidget(self.logo_label)
 
@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
 
         sidebar_layout.addSpacing(4)
 
-        self.version_label = QLabel("v1.0.1")
+        self.version_label = QLabel("v1.0.2")
         self.version_label.setAlignment(Qt.AlignCenter)
         sidebar_layout.addWidget(self.version_label)
 
@@ -231,6 +231,7 @@ class MainWindow(QMainWindow):
 
         if 0 <= current < len(self.sidebar_buttons):
             self.sidebar_buttons[current].setChecked(True)
+        self._update_sidebar_for_page()
 
     def _toggle_theme(self):
         ThemeManager.toggle()
@@ -308,6 +309,21 @@ class MainWindow(QMainWindow):
                 self.content_stack.setCurrentIndex(i)
             else:
                 btn.setChecked(False)
+        self._update_sidebar_for_page()
+
+    def _update_sidebar_for_page(self):
+        is_home = self.content_stack.currentIndex() == 0
+        dark = ThemeManager.is_dark()
+        if is_home:
+            self.sidebar.setStyleSheet("QFrame#sidebar { background: transparent; border-right: none; }")
+            self.separator.setStyleSheet("background: transparent; border: none; width: 1px;")
+            if dark:
+                self.home_page.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #1a1f2e, stop:1 #1a2332);")
+            else:
+                self.home_page.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #e8f4fd, stop:1 #f0f4ff);")
+        else:
+            self._apply_sidebar_theme(dark)
+            self.home_page.setStyleSheet("")
 
     def _switch_page(self, index: int):
         if 0 <= index < len(self.sidebar_buttons):

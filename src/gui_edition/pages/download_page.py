@@ -73,6 +73,7 @@ class DownloadPage(QWidget):
 
         input_group = QGroupBox("链接输入")
         il = QVBoxLayout(input_group)
+        il.setContentsMargins(16, 20, 16, 16)
         self.url_input = QTextEdit()
         self.url_input.setPlaceholderText(
             "输入抖音/TikTok 作品链接，每行一个\n"
@@ -84,25 +85,30 @@ class DownloadPage(QWidget):
         il.addWidget(self.url_input)
         layout.addWidget(input_group)
 
-        opts_frame = QFrame()
-        ol = QHBoxLayout(opts_frame)
-        ol.setContentsMargins(0, 0, 0, 0)
+        opts_group = QGroupBox("下载选项")
+        ol = QHBoxLayout(opts_group)
+        ol.setContentsMargins(16, 20, 16, 16)
+        ol.setSpacing(24)
         fl = QFormLayout()
+        fl.setSpacing(8)
         fl.addRow(QCheckBox("TikTok 平台"))
         fl.addRow(QCheckBox("下载音乐"))
         fl.addRow(QCheckBox("下载封面"))
         fl.addRow(QCheckBox("按作品分文件夹"))
         ol.addLayout(fl)
         fl2 = QFormLayout()
+        fl2.setSpacing(8)
         self.max_retry = QSpinBox()
         self.max_retry.setRange(0, 10)
         self.max_retry.setValue(5)
+        self.max_retry.setMinimumHeight(32)
         fl2.addRow("重试次数:", self.max_retry)
         ol.addLayout(fl2)
         ol.addStretch()
-        layout.addWidget(opts_frame)
+        layout.addWidget(opts_group)
 
         bl = QHBoxLayout()
+        bl.setSpacing(12)
         self.start_btn = QPushButton("开始下载")
         self.start_btn.setMinimumHeight(40)
         self.start_btn.setMinimumWidth(120)
@@ -126,14 +132,14 @@ class DownloadPage(QWidget):
 
         log_group = QGroupBox("下载日志")
         ll = QVBoxLayout(log_group)
+        ll.setContentsMargins(16, 20, 16, 16)
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
-        self.log_text.setMaximumHeight(200)
+        self.log_text.setMinimumHeight(120)
         self.log_text.setObjectName("logTerminal")
         ll.addWidget(self.log_text)
         layout.addWidget(log_group)
 
-        layout.addStretch()
         self.scroll.setWidget(self.container)
 
     def update_theme(self, dark):
@@ -149,6 +155,9 @@ class DownloadPage(QWidget):
         self.progress_bar.setVisible(True)
         self.progress_bar.setRange(0, 0)
         self.start_btn.setEnabled(False)
+        self.stop_btn.setObjectName("btnDangerActive")
+        self.stop_btn.style().unpolish(self.stop_btn)
+        self.stop_btn.style().polish(self.stop_btn)
         self.stop_btn.setEnabled(True)
         self.log_text.clear()
         self.log_text.append(f"[信息] 开始下载 {len(urls)} 个作品...")
@@ -165,6 +174,9 @@ class DownloadPage(QWidget):
     def _on_finished(self, success, msg):
         self.start_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
+        self.stop_btn.setObjectName("btnDanger")
+        self.stop_btn.style().unpolish(self.stop_btn)
+        self.stop_btn.style().polish(self.stop_btn)
         self.log_text.append(f"[{'完成' if success else '错误'}] {msg}")
         self.progress_bar.setVisible(False)
         self._worker = None
