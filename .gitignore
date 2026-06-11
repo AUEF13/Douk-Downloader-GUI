@@ -31,9 +31,7 @@ Cache/
 *.log
 installer/
 tool/
-fonts/
-src/gui_edition/assets/*.svg
-src/gui_edition/assets/*.png
+*.svg
 *.mp4
 *.mp3
 *.zip
