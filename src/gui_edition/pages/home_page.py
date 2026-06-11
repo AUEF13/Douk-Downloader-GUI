@@ -15,7 +15,7 @@ class HomePage(QWidget):
         layout = QVBoxLayout(self)
         layout.setAlignment(Qt.AlignCenter)
 
-        self.title = QLabel("DouK")
+        self.title = QLabel("DucK")
         self.title.setAlignment(Qt.AlignCenter)
         title_font = QFont()
         title_font.setPointSize(72)

@@ -1,12 +1,12 @@
 [Setup]
 AppId={{B8F7E3A2-4D5C-4E8F-9A1B-2C3D4E5F6A7B}}
-AppName=DouK-Downloader
+AppName=DucK-Downloader-GUI
 AppVersion=1.0.1
-AppPublisher=DouK
-DefaultDirName={autopf}\DouK-Downloader
-DefaultGroupName=DouK-Downloader
+AppPublisher=Xiaomi MiMo
+DefaultDirName={autopf}\DucK-Downloader-GUI
+DefaultGroupName=DucK-Downloader-GUI
 OutputDir=C:\Qyyy\TikTokDownloader-master\installer
-OutputBaseFilename=DouK-Downloader-1.0.1-Setup
+OutputBaseFilename=DucK-Downloader-GUI-1.0.1-Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -20,12 +20,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Qyyy\TikTokDownloader-master\dist\DouK-Downloader\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Qyyy\TikTokDownloader-master\dist\DucK-Downloader-GUI\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\DouK-Downloader"; Filename: "{app}\DouK-Downloader.exe"
-Name: "{group}\{cm:UninstallProgram,DouK-Downloader}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\DouK-Downloader"; Filename: "{app}\DouK-Downloader.exe"; Tasks: desktopicon
+Name: "{group}\DucK-Downloader-GUI"; Filename: "{app}\DucK-Downloader-GUI.exe"
+Name: "{group}\{cm:UninstallProgram,DucK-Downloader-GUI}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\DucK-Downloader-GUI"; Filename: "{app}\DucK-Downloader-GUI.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\DouK-Downloader.exe"; Description: "{cm:LaunchProgram,DouK-Downloader}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\DucK-Downloader-GUI.exe"; Description: "{cm:LaunchProgram,DucK-Downloader-GUI}"; Flags: nowait postinstall skipifsilent

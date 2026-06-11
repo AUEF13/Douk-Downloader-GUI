@@ -1,4 +1,4 @@
-# DouK-Downloader-GUI
+# DucK-Downloader-GUI
 
 <p align="center">
   <b>TikTok / Douyin Data Collection & Download Tool — GUI Edition</b>
@@ -23,7 +23,7 @@ The original [DouK-Downloader](https://github.com/JoeanAmier/TikTokDownloader) p
 
 ### Option 1: Installer
 
-Download `DouK-Downloader-1.0.1-Setup.exe` and run it.
+Download `DucK-Downloader-GUI-1.0.1-Setup.exe` and run it.
 
 ### Option 2: From Source
 

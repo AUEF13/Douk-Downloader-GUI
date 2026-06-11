@@ -1,4 +1,4 @@
-# DouK-Downloader GUI 启动脚本
+# DucK-Downloader-GUI 启动脚本
 # 使用方法:
 #     1. 安装 Python 3.12: 已安装至 C:\tool\Python312
 #     2. 安装依赖: C:\tool\Python312\python.exe -m pip install PySide6 qasync

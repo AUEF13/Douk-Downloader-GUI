@@ -104,7 +104,7 @@ class AsyncThread(Thread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("DouK-Downloader GUI v1.0.1")
+        self.setWindowTitle("DucK-Downloader-GUI v1.0.1")
         self.setMinimumSize(1000, 700)
         self.resize(1100, 750)
 
@@ -146,7 +146,7 @@ class MainWindow(QMainWindow):
         sidebar_layout.setContentsMargins(12, 24, 12, 16)
         sidebar_layout.setSpacing(4)
 
-        self.logo_label = QLabel("DouK-Downloader")
+        self.logo_label = QLabel("DucK-Downloader")
         self.logo_label.setAlignment(Qt.AlignCenter)
         logo_font = QFont()
         logo_font.setPointSize(14)

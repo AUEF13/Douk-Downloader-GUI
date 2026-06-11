@@ -1,4 +1,4 @@
-# DouK-Downloader-GUI
+# DucK-Downloader-GUI
 
 <p align="center">
   <b>TikTok / 抖音 数据采集与下载工具 — 图形界面版本</b>
@@ -23,7 +23,7 @@
 
 ### 方式一：安装程序
 
-下载 `DouK-Downloader-1.0.1-Setup.exe`，双击运行即可。
+下载 `DucK-Downloader-GUI-1.0.1-Setup.exe`，双击运行即可。
 
 ### 方式二：源码运行
 
