@@ -6,9 +6,8 @@
 
 ## 项目说明
 
-本项目是在 [DouK-Downloader](https://github.com/JoeanAmier/TikTokDownloader) 的基础上开发的 **PySide6 图形界面版本**，由 **Xiaomi MiMo** 设计并发布。
+本项目是在 [DouK-Downloader](https://github.com/JoeanAmier/TikTokDownloader) 的基础上开发的 **PySide6 图形界面版本**，由 **Xiaomi MiMo Code** 设计并发布。
 
-原项目 [DouK-Downloader](https://github.com/JoeanAmier/TikTokDownloader) 提供了强大的命令行数据采集能力，本项目将其核心功能封装为直观的桌面 GUI，让操作更简单、体验更友好。
 
 ## 功能特性
 
@@ -56,7 +55,7 @@ src/gui_edition/
 ## 致谢
 
 - [DouK-Downloader](https://github.com/JoeanAmier/TikTokDownloader) — 原项目核心逻辑
-- [Xiaomi MiMo](https://github.com/XiaomiMiMo) — GUI 设计与发布
+- [Xiaomi MiMo Code](https://mimo.mi.com/) — GUI 设计与发布
 
 ## 许可证
 
