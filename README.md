@@ -22,7 +22,7 @@
 
 ### 方式一：安装程序
 
-下载 `DucK-Downloader-GUI-1.0.1-Setup.exe`，双击运行即可。
+前往 `Releases` 下载 `exe`，双击运行即可。
 
 ### 方式二：源码运行
 
