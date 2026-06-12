@@ -33,6 +33,7 @@ class CookiePage(QWidget):
         super().__init__(parent)
         self.bridge = bridge
         self.async_thread = async_thread
+        self._worker = None
         self._setup_ui()
         self._load_existing()
 
@@ -148,9 +149,9 @@ class CookiePage(QWidget):
             return
         self.save_btn.setEnabled(False)
         self.status_label.setText("正在保存...")
-        w = CookieSaveWorker(self.bridge, self.async_thread, dy, tk)
-        w.finished.connect(self._on_done)
-        w.start()
+        self._worker = CookieSaveWorker(self.bridge, self.async_thread, dy, tk)
+        self._worker.finished.connect(self._on_done)
+        self._worker.start()
 
     def _on_done(self, ok, msg):
         self.save_btn.setEnabled(True)

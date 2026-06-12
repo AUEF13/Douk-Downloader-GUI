@@ -1,9 +1,12 @@
 import asyncio
 from asyncio import TaskGroup
 from datetime import date
+from pathlib import Path
 from time import time
 from types import SimpleNamespace
 from typing import Callable
+
+from PySide6.QtCore import QObject, Signal as QSignal
 
 from ..application.main_terminal import TikTok
 from ..config import Parameter, Settings
@@ -219,10 +222,63 @@ class GUIBridge:
         return result
 
     def save_settings(self, settings: dict):
-        current = self.settings.read()
-        current.update({k: v for k, v in settings.items() if v is not None})
-        self.settings.update(current)
-        self.log("设置已保存")
+        try:
+            current = self.settings.read()
+            current.update({k: v for k, v in settings.items() if v is not None})
+            self.settings.update(current)
+            self._pending_settings = current
+            self.log("设置已保存（重启后生效）")
+        except Exception as e:
+            self.log(f"保存设置失败: {e}", "error")
+
+    def apply_pending_settings(self):
+        if not hasattr(self, '_pending_settings') or not self._pending_settings:
+            return
+        data = self._pending_settings
+        self._pending_settings = None
+        if self.parameter:
+            try:
+                p = self.parameter
+                root = data.get("root", "")
+                p.root = Path(root) if root and Path(root).is_dir() else p.ROOT
+                p.folder_name = data.get("folder_name", "Download") or "Download"
+                p.folder_mode = bool(data.get("folder_mode", False))
+                p.music = bool(data.get("music", False))
+                p.dynamic_cover = bool(data.get("dynamic_cover", False))
+                p.static_cover = bool(data.get("static_cover", False))
+                name_format = data.get("name_format", "create_time type nickname desc")
+                p.name_format = name_format.split() if name_format else ["create_time", "type", "nickname", "desc"]
+                p.split = data.get("split", "-") or "-"
+                p.name_length = int(data.get("name_length", 128))
+                p.desc_length = int(data.get("desc_length", 64))
+                p.timeout = int(data.get("timeout", 10))
+                p.max_retry = int(data.get("max_retry", 5))
+                p.download = bool(data.get("download", True))
+                self.log("运行参数已更新")
+            except Exception as e:
+                self.log(f"更新运行参数失败: {e}", "error")
+
+    def _reload_settings(self, data: dict):
+        if self.parameter:
+            try:
+                p = self.parameter
+                root = data.get("root", "")
+                p.root = Path(root) if root and Path(root).is_dir() else p.ROOT
+                p.folder_name = data.get("folder_name", "Download") or "Download"
+                p.folder_mode = bool(data.get("folder_mode", False))
+                p.music = bool(data.get("music", False))
+                p.dynamic_cover = bool(data.get("dynamic_cover", False))
+                p.static_cover = bool(data.get("static_cover", False))
+                name_format = data.get("name_format", "create_time type nickname desc")
+                p.name_format = name_format.split() if name_format else ["create_time", "type", "nickname", "desc"]
+                p.split = data.get("split", "-") or "-"
+                p.name_length = int(data.get("name_length", 128))
+                p.desc_length = int(data.get("desc_length", 64))
+                p.timeout = int(data.get("timeout", 10))
+                p.max_retry = int(data.get("max_retry", 5))
+                p.download = bool(data.get("download", True))
+            except Exception as e:
+                self.log(f"更新运行参数失败: {e}", "error")
 
     def save_cookies(self, cookie: str = "", cookie_tiktok: str = ""):
         current = self.settings.read()

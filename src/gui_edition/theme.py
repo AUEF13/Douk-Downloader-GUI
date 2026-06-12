@@ -94,6 +94,8 @@ QLineEdit, QTextEdit, QSpinBox {{
     font-size: 13px;
     background: white;
     color: #333;
+    selection-background-color: #3498db;
+    selection-color: white;
 }}
 QComboBox {{
     border: 1px solid #ccc;
@@ -145,20 +147,20 @@ QProgressBar::chunk {{
     border-radius: 3px;
 }}
 QCheckBox {{
-    spacing: 6px;
+    spacing: 8px;
     font-size: 13px;
     color: #333;
 }}
 QCheckBox::indicator {{
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
+    width: 16px;
+    height: 16px;
     border: 2px solid #999;
-    background: transparent;
+    border-radius: 3px;
+    background: white;
 }}
 QCheckBox::indicator:checked {{
     background: #3498db;
-    border: 2px solid #3498db;
+    border-color: #3498db;
 }}
 QPushButton {{
     color: #333;
@@ -367,20 +369,20 @@ QProgressBar::chunk {{
     border-radius: 3px;
 }}
 QCheckBox {{
-    spacing: 6px;
+    spacing: 8px;
     font-size: 13px;
     color: #d4d4d4;
 }}
 QCheckBox::indicator {{
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
+    width: 16px;
+    height: 16px;
     border: 2px solid #888;
-    background: transparent;
+    border-radius: 3px;
+    background: #2d2d2d;
 }}
 QCheckBox::indicator:checked {{
     background: #3498db;
-    border: 2px solid #3498db;
+    border-color: #3498db;
 }}
 QPushButton {{
     color: #d4d4d4;

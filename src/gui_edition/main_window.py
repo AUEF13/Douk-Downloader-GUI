@@ -105,7 +105,7 @@ class AsyncThread(Thread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("DucK-Downloader-GUI v1.0.2")
+        self.setWindowTitle("DucK-Downloader-GUI v1.0.3")
         self.setMinimumSize(1000, 700)
         self.resize(1100, 750)
 
@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
 
         sidebar_layout.addSpacing(4)
 
-        self.version_label = QLabel("v1.0.2")
+        self.version_label = QLabel("v1.0.3")
         self.version_label.setAlignment(Qt.AlignCenter)
         sidebar_layout.addWidget(self.version_label)
 

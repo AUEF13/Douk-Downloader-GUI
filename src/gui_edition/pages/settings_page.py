@@ -33,6 +33,7 @@ class SettingsPage(QWidget):
         super().__init__(parent)
         self.bridge = bridge
         self.async_thread = async_thread
+        self._worker = None
         self._setup_ui()
         self._load_existing()
 
@@ -76,10 +77,14 @@ class SettingsPage(QWidget):
         self.folder_name = QLineEdit("Download")
         self.folder_name.setMinimumHeight(32)
         sl.addRow("默认文件夹:", self.folder_name)
-        sl.addRow(QCheckBox("按作品分文件夹保存"))
-        sl.addRow(QCheckBox("下载音乐"))
-        sl.addRow(QCheckBox("下载动态封面"))
-        sl.addRow(QCheckBox("下载静态封面"))
+        self.folder_mode_cb = QCheckBox("按作品分文件夹保存")
+        sl.addRow(self.folder_mode_cb)
+        self.music_cb = QCheckBox("下载音乐")
+        sl.addRow(self.music_cb)
+        self.dynamic_cover_cb = QCheckBox("下载动态封面")
+        sl.addRow(self.dynamic_cover_cb)
+        self.static_cover_cb = QCheckBox("下载静态封面")
+        sl.addRow(self.static_cover_cb)
         layout.addWidget(stor_group)
 
         name_group = QGroupBox("文件命名")
@@ -153,8 +158,12 @@ class SettingsPage(QWidget):
         pl = QFormLayout(plat_group)
         pl.setSpacing(12)
         pl.setContentsMargins(16, 20, 16, 16)
-        pl.addRow(QCheckBox("启用抖音平台"))
-        pl.addRow(QCheckBox("启用 TikTok 平台"))
+        self.douyin_platform_cb = QCheckBox("启用抖音平台")
+        self.douyin_platform_cb.setChecked(True)
+        pl.addRow(self.douyin_platform_cb)
+        self.tiktok_platform_cb = QCheckBox("启用 TikTok 平台")
+        self.tiktok_platform_cb.setChecked(True)
+        pl.addRow(self.tiktok_platform_cb)
         layout.addWidget(plat_group)
 
         self.save_frame = QFrame()
@@ -184,6 +193,10 @@ class SettingsPage(QWidget):
                 d = json.loads(p.read_text("utf-8-sig"))
                 if d.get("root"): self.root_input.setText(d["root"])
                 if d.get("folder_name"): self.folder_name.setText(d["folder_name"])
+                self.folder_mode_cb.setChecked(bool(d.get("folder_mode", False)))
+                self.music_cb.setChecked(bool(d.get("music", False)))
+                self.dynamic_cover_cb.setChecked(bool(d.get("dynamic_cover", False)))
+                self.static_cover_cb.setChecked(bool(d.get("static_cover", False)))
                 if d.get("name_format"): self.name_format.setCurrentText(d["name_format"])
                 if d.get("split"): self.split.setText(d["split"])
                 if d.get("name_length"): self.name_length.setValue(d["name_length"])
@@ -192,12 +205,18 @@ class SettingsPage(QWidget):
                 if d.get("proxy_tiktok"): self.proxy_tiktok.setText(d["proxy_tiktok"])
                 if d.get("timeout"): self.timeout.setValue(d["timeout"])
                 if d.get("max_retry"): self.max_retry.setValue(d["max_retry"])
+                self.douyin_platform_cb.setChecked(bool(d.get("douyin_platform", True)))
+                self.tiktok_platform_cb.setChecked(bool(d.get("tiktok_platform", True)))
         except: pass
 
     def _on_save(self):
         settings = {
             "root": self.root_input.text().strip(),
             "folder_name": self.folder_name.text().strip() or "Download",
+            "folder_mode": self.folder_mode_cb.isChecked(),
+            "music": self.music_cb.isChecked(),
+            "dynamic_cover": self.dynamic_cover_cb.isChecked(),
+            "static_cover": self.static_cover_cb.isChecked(),
             "name_format": self.name_format.currentText().strip(),
             "split": self.split.text() or "-",
             "name_length": self.name_length.value(),
@@ -206,17 +225,20 @@ class SettingsPage(QWidget):
             "proxy_tiktok": self.proxy_tiktok.text().strip(),
             "timeout": self.timeout.value(),
             "max_retry": self.max_retry.value(),
+            "douyin_platform": self.douyin_platform_cb.isChecked(),
+            "tiktok_platform": self.tiktok_platform_cb.isChecked(),
         }
         self.save_btn.setEnabled(False)
         self.status_label.setText("正在保存...")
-        w = SettingsSaveWorker(self.bridge, self.async_thread, settings)
-        w.finished.connect(self._on_done)
-        w.start()
+        self._worker = SettingsSaveWorker(self.bridge, self.async_thread, settings)
+        self._worker.finished.connect(self._on_done)
+        self._worker.start()
 
     def _on_done(self, ok, msg):
         self.save_btn.setEnabled(True)
         if ok:
             self.status_label.setText("设置已保存")
+            self.bridge.apply_pending_settings()
             self.settings_saved.emit()
         else:
             self.status_label.setText(f"保存失败: {msg}")
